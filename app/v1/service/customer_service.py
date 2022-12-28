@@ -22,42 +22,14 @@ def create_customer(customer: customer_schema.CustomerRegister):
 
     db_customer.save()
 
-    response = customer_schema.Customer(
-        id = db_customer.id,
-        firstName = db_customer.firstName,
-        lastName = db_customer.lastName,
-        email = db_customer.email,
-        birthdate = db_customer.birthdate,
-        active = db_customer.active,
-        phone = db_customer.phone,
-        city = CityBase(
-            code = db_customer.city.code, 
-            description= db_customer.city.description
-        )        
-    )
-
-    return response
+    return mappingEntityToDto(db_customer)
 
 def get_all_customers():
     get_customers = CustomerModel.select()
 
     list_customers = []
     for customer in get_customers:
-        list_customers.append(
-            customer_schema.Customer(
-                id = customer.id,
-                firstName = customer.firstName,
-                lastName = customer.lastName,
-                email = customer.email,
-                birthdate = customer.birthdate,
-                active = customer.active,
-                phone = customer.phone,
-                city = CityBase(
-                    code = customer.city.code, 
-                    description= customer.city.description
-                )
-            ) 
-        )
+        list_customers.append(mappingEntityToDto(customer))
 
     return list_customers
 
@@ -70,7 +42,10 @@ def get_customer(customer_id: int):
             detail="Customer not found"
         )
 
-    response = customer_schema.Customer(
+    return mappingEntityToDto(customer)
+
+def mappingEntityToDto(customer: CustomerModel):
+    return customer_schema.Customer(
         id = customer.id,
         firstName = customer.firstName,
         lastName = customer.lastName,
@@ -81,10 +56,8 @@ def get_customer(customer_id: int):
         city = CityBase(
             code = customer.city.code, 
             description= customer.city.description
-        )        
+        )     
     )
-
-    return response
 
 
 
