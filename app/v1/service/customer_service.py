@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from fastapi import HTTPException, status
 
 from app.v1.model.customer_model import Customer as CustomerModel
@@ -32,11 +30,61 @@ def create_customer(customer: customer_schema.CustomerRegister):
         birthdate = db_customer.birthdate,
         active = db_customer.active,
         phone = db_customer.phone,
-        city = CityBase(code = db_customer.city.code, description= db_customer.city.description)        
+        city = CityBase(
+            code = db_customer.city.code, 
+            description= db_customer.city.description
+        )        
     )
 
     return response
 
+def get_all_customers():
+    get_customers = CustomerModel.select()
+
+    list_customers = []
+    for customer in get_customers:
+        list_customers.append(
+            customer_schema.Customer(
+                id = customer.id,
+                firstName = customer.firstName,
+                lastName = customer.lastName,
+                email = customer.email,
+                birthdate = customer.birthdate,
+                active = customer.active,
+                phone = customer.phone,
+                city = CityBase(
+                    code = customer.city.code, 
+                    description= customer.city.description
+                )
+            ) 
+        )
+
+    return list_customers
+
+def get_customer(customer_id: int):
+    customer = CustomerModel.filter(CustomerModel.id == customer_id).first()
+
+    if not customer:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Customer not found"
+        )
+
+    response = customer_schema.Customer(
+        id = customer.id,
+        firstName = customer.firstName,
+        lastName = customer.lastName,
+        email = customer.email,
+        birthdate = customer.birthdate,
+        active = customer.active,
+        phone = customer.phone,
+        city = CityBase(
+            code = customer.city.code, 
+            description= customer.city.description
+        )        
+    )
+
+    return response
 
 
 
