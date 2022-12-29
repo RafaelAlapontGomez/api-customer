@@ -1,3 +1,4 @@
+import logging
 from fastapi import HTTPException, status
 
 from app.v1.model.customer_model import Customer as CustomerModel
@@ -6,9 +7,14 @@ from app.v1.model.city_model import City as CityModel
 from app.v1.schema import customer_schema
 from app.v1.schema.city_schema import CityBase
 
+logger = logging.getLogger(__name__)  # the __name__ resolve to "uicheckapp.services"
+                                      # This will load the uicheckapp logger
+
 def create_customer(customer: customer_schema.CustomerRegister):
+    logger.info("Create a new customer")
     get_customer = CustomerModel.filter(CustomerModel.email == customer.email   ).first()
     if get_customer:
+        logger.info("customer already registered EMAIL " + customer.email)
         msg = "customer already registered"
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg)
     
@@ -19,6 +25,7 @@ def create_customer(customer: customer_schema.CustomerRegister):
     return mappingEntityToDto(db_customer)
 
 def get_all_customers():
+    logger.info("Get all customers")
     get_customers = CustomerModel.select()
 
     list_customers = []
@@ -28,6 +35,7 @@ def get_all_customers():
     return list_customers
 
 def get_customer(customer_id: int):
+    logger.info("Get customer " + str(customer_id))
     customer = CustomerModel.filter(CustomerModel.id == customer_id).first()
 
     if not customer:
@@ -39,6 +47,7 @@ def get_customer(customer_id: int):
     return mappingEntityToDto(customer)
 
 def update_customer(customer_id: int, customer: customer_schema.CustomerRegister):
+    logger.info("Update customer " + str(customer_id))
     db_customer: CustomerModel = CustomerModel.filter(CustomerModel.id == customer_id).first()
 
     if not db_customer:
@@ -55,8 +64,6 @@ def update_customer(customer_id: int, customer: customer_schema.CustomerRegister
             detail="City not found"
         )
 
-    print ("db_customer ==> " + str(db_customer.id))
-
     db_customer.firstName = customer.firstName
     db_customer.lastName = customer.lastName
     db_customer.birthdate = customer.birthdate
@@ -70,6 +77,7 @@ def update_customer(customer_id: int, customer: customer_schema.CustomerRegister
     return mappingEntityToDto(db_customer)
 
 def delete_customer(customer_id: int):
+    logger.info("Delete customer" + str(customer_id))
     db_customer: CustomerModel = CustomerModel.filter(CustomerModel.id == customer_id).first()
 
     if not db_customer:
