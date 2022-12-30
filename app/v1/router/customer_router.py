@@ -52,7 +52,7 @@ def update_customer(customer_id, customer: customer_schema.CustomerRegister = Bo
 
 @router.delete(
     "/{customer_id}",
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[]
 )
 def delete_customer(customer_id: int):

@@ -1,4 +1,4 @@
-import logging
+import logging.config
 from fastapi import HTTPException, status
 
 from app.v1.model.customer_model import Customer as CustomerModel
