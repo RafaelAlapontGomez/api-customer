@@ -8,7 +8,7 @@ class Customer(peewee.Model):
     id = peewee.AutoField(primary_key=True)
     firstName = peewee.CharField(max_length=20)
     lastName = peewee.CharField(max_length=40)
-    birthdate = peewee.DateField(formats=['%d/%m/%Y'])
+    birthdate = peewee.DateField(formats=['%Y-%m-%d'])
     email = peewee.CharField(unique=True, max_length=150)
     active = peewee.BooleanField(default=True)
     phone = peewee.CharField(max_length=9, null = True)

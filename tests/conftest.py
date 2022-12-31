@@ -1,6 +1,6 @@
 import logging
 import os
-from playhouse.sqlite_ext import SqliteDatabase
+import pymysql
 
 os.environ['RUN_ENV'] = 'test'
 
@@ -12,12 +12,49 @@ logger = logging.getLogger(__name__)  # the __name__ resolve to "uicheckapp.serv
 
 settings: Settings = Settings()
 
-test_db = SqliteDatabase(':memory:')
 MODELS = [customer_model.Customer, city_model.City]
 
+def mysql_connection():
+    con = pymysql.connect(
+        host=settings.db_host, 
+        port=settings.db_port, 
+        user=settings.db_user,
+        passwd=settings.db_pass
+    )
+    return con
+
+def delete_database():
+
+    if not settings.db_name.startswith("test_"):
+        raise Exception(f'Invalid name for database = {settings.db_name}')
+
+    sql_drop_db = f"DROP DATABASE IF EXISTS {settings.db_name}"
+    logger.info(f"DROP DATABASE IF EXISTS {settings.db_name}")
+
+    con = mysql_connection()
+    cursor = con.cursor()
+    cursor.execute(sql_drop_db)
+    con.close()
+
+def create_database():
+    sql_create_db = f"CREATE DATABASE {settings.db_name};"
+    sql_use_db = f"USE {settings.db_name};"
+
+    con = mysql_connection()
+    cursor = con.cursor()
+    cursor.execute(sql_create_db)
+    cursor.execute(sql_use_db)
+    con.close()
+
 def pytest_sessionstart(session):
-    test_db.connect()
-    test_db.create_tables(MODELS)
+
+    delete_database()
+    create_database()
+
+    from app.v1.utils.db import db
+
+    with db:
+        db.create_tables(MODELS)
 
     create_cities()
 
@@ -32,9 +69,7 @@ def create_cities():
 
 def pytest_sessionfinish(session, exitstatus):
     logger.info('sessions finish')
-    test_db.drop_tables(MODELS)
-    test_db.close()
-
+    delete_database()
 
 
 

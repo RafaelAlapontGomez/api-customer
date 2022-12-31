@@ -1,6 +1,7 @@
 from typing import Union
+from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from pydantic import Field
 from pydantic import EmailStr
 from pydantic.datetime_parse import parse_date, get_numeric
@@ -17,9 +18,9 @@ class CustomerBase(BaseModel):
         ...,
         example="apellido1 apellido2"
     )
-    birthdate: str = Field(
+    birthdate: date = Field(
         ...,
-        example="19/07/1963"
+        example="1963-07-19"
     )
     email: EmailStr = Field(
         ...,

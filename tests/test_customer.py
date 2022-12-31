@@ -9,7 +9,7 @@ def test_create_customer_ok():
     customer = {
         "firstName": "Rafael",
         "lastName": "Alapont Gómez",
-        "birthdate": "19/07/1963",
+        "birthdate": "1973-06-12",
         "email": "myemail18@cosasdedevs.com",
         "active": True,
         "phone": "619524675",
@@ -32,7 +32,7 @@ def test_create_customer_duplicate():
     customer = {
         "firstName": "Rafael",
         "lastName": "Alapont Gómez",
-        "birthdate": "19/07/1963",
+        "birthdate": "1973-06-12",
         "email": "myemail18@cosasdedevs.com",
         "active": True,
         "phone": "619524675",
@@ -77,7 +77,7 @@ def test_update_customer_ok():
     customer = {
         "firstName": "Rafael",
         "lastName": "Alapont Gómez",
-        "birthdate": "19/07/1963",
+        "birthdate": "1973-06-12",
         "email": "rafae@kktua.com",
         "active": False,
         "phone": "919524675",
