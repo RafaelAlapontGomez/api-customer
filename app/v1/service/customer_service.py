@@ -28,9 +28,7 @@ def get_all_customers():
     logger.info("Get all customers")
     get_customers = CustomerModel.select()
 
-    list_customers = []
-    for customer in get_customers:
-        list_customers.append(mappingEntityToDto(customer))
+    list_customers = list(map(mappingEntityToDto, get_customers))
 
     return list_customers
 
